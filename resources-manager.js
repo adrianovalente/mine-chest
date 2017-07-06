@@ -1,9 +1,5 @@
-const AWS = require('aws-sdk')
-const childProcess = require('child_process')
-
 const config = require('./config')
-
-const s3 = new AWS.S3()
+const execCommand = require('./command-executor')
 
 module.exports = {
   uploadResources,
@@ -34,17 +30,4 @@ function setupResources(date) {
     .then(() => execCommand(`unzip ${config.TMP_FILE_PATH} -d ${process.cwd()}`))
     .then(() => execCommand(`curl ${config.MINECRAFT_SERVER_URL} > ${config.RESOURCES_PATH}/minecraft_server.1.12.jar`))
 
-}
-
-function execCommand(command) {
-  console.log(command)
-  return new Promise((resolve, reject) => {
-    childProcess.exec(command, (err, stdout, stderr) => {
-      if (!err && !stdout && stderr) err = new Error(stderr)
-      if (err) return reject(err)
-
-      console.log(stdout)
-      resolve(stdout)
-    })
-  })
 }
