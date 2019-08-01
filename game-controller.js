@@ -23,8 +23,8 @@ module.exports = {
 function startServer() {
   setStatus(GameStatus.SETUP)
 
-  Promise.resolve()
-  // resourcesManager.setupResources()
+ // Promise.resolve()
+    resourcesManager.setupResources()
     .then(() => {
 
       console.log('Starting server...')
@@ -38,8 +38,6 @@ function startServer() {
       game.stdout.on('data', onData)
       game.stderr.on('data', onData)
 
-
-
     })
 
     .catch(console.error)
@@ -52,7 +50,6 @@ function startServer() {
       }
       console.log('data:', String(data))
     }
-
 }
 
 function setStatus(status) {
