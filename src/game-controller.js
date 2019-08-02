@@ -5,6 +5,10 @@ const childProcess = require('child_process')
 const resourcesManager = require('./resources-manager')
 const config = require('./config')
 
+const {
+  SERVER_FILE_NAME
+} = require('./config')
+
 const GameStatus = {
   IDLE     : 'idle',
   SETUP    : 'setup',
@@ -23,15 +27,15 @@ module.exports = {
 function startServer() {
   setStatus(GameStatus.SETUP)
 
- // Promise.resolve()
-    resourcesManager.setupResources()
+  Promise.resolve()
+    .then(() => resourcesManager.setupResources())
     .then(() => {
 
       console.log('Starting server...')
       setStatus(GameStatus.STARTING)
       const game = childProcess.spawn(
         'java',
-        ['-Xmx1024M', '-Xms1024M', '-jar', `${config.RESOURCES_PATH}/minecraft_server.1.12.jar`, 'nogui'],
+        ['-Xmx1024M', '-Xms1024M', '-jar', `${config.RESOURCES_PATH}/${SERVER_FILE_NAME}`, 'nogui'],
         { cwd: config.RESOURCES_PATH, stdio: ['pipe', 'pipe', 'pipe']}
       )
 

@@ -1,0 +1,3 @@
+# This software (mine-chest) is only a wrapper to the Micraft game/server itself.
+# By running it we assume that you agree to the EULA from Mojang (https://account.mojang.com/documents/minecraft_eula)
+eula=true
