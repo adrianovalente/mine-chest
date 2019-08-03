@@ -5,6 +5,7 @@
 
 > Gamers never die, they respawn.
 
+[![Build Status](https://travis-ci.com/adrianovalente/mine-chest.svg?branch=master)](https://travis-ci.com/adrianovalente/mine-chest)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 [![platforms](https://img.shields.io/badge/platform-linux--64%20%7C%20osx--64-orange.svg)]()
 
