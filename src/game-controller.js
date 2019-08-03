@@ -1,13 +1,11 @@
-require('colors')
-
+const { yellow, bold } = require('kleur')
 const childProcess = require('child_process')
 
-const resourcesManager = require('./resources-manager')
-const config = require('./config')
-
+const resourcesManager = require('./infra/resources-manager')
 const {
-  SERVER_FILE_NAME
-} = require('./config')
+  SERVER_FILE_NAME,
+  BIN_PATH
+} = require('./infra/config')
 
 const GameStatus = {
   IDLE: 'idle',
@@ -34,8 +32,8 @@ function startServer () {
       setStatus(GameStatus.STARTING)
       const game = childProcess.spawn(
         'java',
-        ['-Xmx1024M', '-Xms1024M', '-jar', `${config.RESOURCES_PATH}/${SERVER_FILE_NAME}`, 'nogui'], {
-          cwd: config.RESOURCES_PATH, stdio: ['pipe', 'pipe', 'pipe']
+        ['-Xmx1024M', '-Xms1024M', '-jar', `${BIN_PATH}/${SERVER_FILE_NAME}`, 'nogui'], {
+          cwd: BIN_PATH, stdio: ['pipe', 'pipe', 'pipe']
         })
 
       game.stdout.on('data', onData)
@@ -60,5 +58,5 @@ function setStatus (status) {
   }
 
   _status = status
-  console.log('STATUS CHANGED: '.green, status)
+  console.log(yellow(bold(`STATUS CHANGED: ${status}`)))
 }
