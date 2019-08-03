@@ -10,11 +10,11 @@ const {
 } = require('./config')
 
 const GameStatus = {
-  IDLE     : 'idle',
-  SETUP    : 'setup',
-  STARTING : 'starting',
-  RUNNING  : 'running',
-  STOPPING : 'stopping'
+  IDLE: 'idle',
+  SETUP: 'setup',
+  STARTING: 'starting',
+  RUNNING: 'running',
+  STOPPING: 'stopping'
 }
 
 var _status = GameStatus.IDLE; // eslint-disable-line
@@ -24,39 +24,37 @@ module.exports = {
   getStatus: () => _status
 }
 
-function startServer() {
+function startServer () {
   setStatus(GameStatus.SETUP)
 
   Promise.resolve()
     .then(() => resourcesManager.setupResources())
     .then(() => {
-
       console.log('Starting server...')
       setStatus(GameStatus.STARTING)
       const game = childProcess.spawn(
         'java',
-        ['-Xmx1024M', '-Xms1024M', '-jar', `${config.RESOURCES_PATH}/${SERVER_FILE_NAME}`, 'nogui'],
-        { cwd: config.RESOURCES_PATH, stdio: ['pipe', 'pipe', 'pipe']}
-      )
+        ['-Xmx1024M', '-Xms1024M', '-jar', `${config.RESOURCES_PATH}/${SERVER_FILE_NAME}`, 'nogui'], {
+          cwd: config.RESOURCES_PATH, stdio: ['pipe', 'pipe', 'pipe']
+        })
 
       game.stdout.on('data', onData)
       game.stderr.on('data', onData)
-
     })
 
     .catch(console.error)
 
-    function onData(a) {
-      const data = String(a)
+  function onData (a) {
+    const data = String(a)
 
-      if (/Done.* For help, type/i.test(data)) {
-        setStatus(GameStatus.RUNNING)
-      }
-      console.log('data:', String(data))
+    if (/Done.* For help, type/i.test(data)) {
+      setStatus(GameStatus.RUNNING)
     }
+    console.log('data:', String(data))
+  }
 }
 
-function setStatus(status) {
+function setStatus (status) {
   if (!Object.keys(GameStatus).filter((key) => GameStatus[key] === status).length) {
     throw new Error('Invalid status!')
   }
