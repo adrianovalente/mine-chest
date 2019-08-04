@@ -6,7 +6,7 @@ const http = require('./infra/http')
   if (process.argv[2]) {
     switch (process.argv[2]) {
       case 'start-http-server': return http.start()
-          .then(() => console.log('Server is listening!'))
+        .then(() => console.log('Server is listening!'))
       case 'upload-snapshot': return snapshot.upload()
       case 'restore-snapshot': return snapshot.restore()
       case 'start-mine-server': return game.startServer()

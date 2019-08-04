@@ -1,5 +1,6 @@
 const childProcess = require('child_process')
 
+const execCommand = require('./infra/command-executor')
 const snapshot = require('./infra/snapshot')
 const { GameStatus, setStatus } = require('./business/status')
 const {
@@ -8,28 +9,44 @@ const {
 } = require('./infra/config')
 
 module.exports = {
-  startServer
+  startServer,
+  stopServer
 }
 
-async function startServer () {
+let _game // eslint-ignore-line
+const noop = () => {}
+
+async function startServer ({ forceRestore } = {}) {
   await setStatus(GameStatus.SNAPSHOT_RESTORE)
 
+  const thereIsAlreadyABackup = !!(await execCommand(`ls ${BIN_PATH}/${SERVER_FILE_NAME}`).catch(noop))
+  const shouldRestoreBackup = forceRestore || !thereIsAlreadyABackup
+
   Promise.resolve()
-    .then(() => snapshot.restore())
+    .then(shouldRestoreBackup ? () => snapshot.restore() : noop)
     .then(async () => {
       console.log('Starting server...')
       await setStatus(GameStatus.STARTING)
-      const game = childProcess.spawn(
+      _game = childProcess.spawn(
         'java',
         ['-Xmx1024M', '-Xms1024M', '-jar', `${BIN_PATH}/${SERVER_FILE_NAME}`, 'nogui'], {
           cwd: BIN_PATH, stdio: ['pipe', 'pipe', 'pipe']
         })
 
-      game.stdout.on('data', onData)
-      game.stderr.on('data', onData)
+      _game.stdout.on('data', onData)
+      _game.stderr.on('data', onData)
     })
 
     .catch(console.error)
+}
+
+async function stopServer () {
+  if (!_game) {
+    throw new Error('Server is not running!')
+  }
+
+  _game.kill('SIGINT')
+  _game = undefined // Sorry for that 🌈
 }
 
 function onData (a) {
