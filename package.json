@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "start": "node src/app.js",
     "lint": "eslint src/"
   },
   "author": "",
