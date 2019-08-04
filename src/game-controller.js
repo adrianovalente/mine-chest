@@ -1,35 +1,24 @@
-const { yellow, bold } = require('kleur')
 const childProcess = require('child_process')
 
-const resourcesManager = require('./infra/resources-manager')
+const snapshot = require('./infra/snapshot')
+const { GameStatus, setStatus } = require('./business/status')
 const {
   SERVER_FILE_NAME,
   BIN_PATH
 } = require('./infra/config')
 
-const GameStatus = {
-  IDLE: 'idle',
-  SETUP: 'setup',
-  STARTING: 'starting',
-  RUNNING: 'running',
-  STOPPING: 'stopping'
-}
-
-var _status = GameStatus.IDLE; // eslint-disable-line
-
 module.exports = {
-  startServer,
-  getStatus: () => _status
+  startServer
 }
 
-function startServer () {
-  setStatus(GameStatus.SETUP)
+async function startServer () {
+  await setStatus(GameStatus.SNAPSHOT_RESTORE)
 
   Promise.resolve()
-    .then(() => resourcesManager.setupResources())
-    .then(() => {
+    .then(() => snapshot.restore())
+    .then(async () => {
       console.log('Starting server...')
-      setStatus(GameStatus.STARTING)
+      await setStatus(GameStatus.STARTING)
       const game = childProcess.spawn(
         'java',
         ['-Xmx1024M', '-Xms1024M', '-jar', `${BIN_PATH}/${SERVER_FILE_NAME}`, 'nogui'], {
@@ -41,22 +30,13 @@ function startServer () {
     })
 
     .catch(console.error)
-
-  function onData (a) {
-    const data = String(a)
-
-    if (/Done.* For help, type/i.test(data)) {
-      setStatus(GameStatus.RUNNING)
-    }
-    console.log('data:', String(data))
-  }
 }
 
-function setStatus (status) {
-  if (!Object.keys(GameStatus).filter((key) => GameStatus[key] === status).length) {
-    throw new Error('Invalid status!')
-  }
+function onData (a) {
+  const data = String(a)
 
-  _status = status
-  console.log(yellow(bold(`STATUS CHANGED: ${status}`)))
+  if (/Done.* For help, type/i.test(data)) {
+    setStatus(GameStatus.RUNNING)
+  }
+  console.log('data:', String(data))
 }
