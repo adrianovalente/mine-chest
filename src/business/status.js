@@ -4,6 +4,7 @@ const GameStatus = {
   SETUP: 'setup',
   STARTING: 'starting',
   RUNNING: 'running',
+  CRASHED: 'crashed'
   STOPPING: 'stopping',
   SNAPSHOT_RESTORE: 'restoring-snapshot',
   SNAPSHOT_UPLOAD: 'uploading-snapshot'

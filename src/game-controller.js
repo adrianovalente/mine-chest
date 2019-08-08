@@ -55,5 +55,15 @@ function onData (a) {
   if (/Done.* For help, type/i.test(data)) {
     setStatus(GameStatus.RUNNING)
   }
+
+  if (/This crash report has been saved to/.test(data)) {
+    setStatus(GameStatus.CRASHED)
+    console.error('Game crashed, exiting in 2000 ms.')
+    setTimeout(() => process.exit(1), 2000)
+  }
+
+
+
+
   console.log('data:', String(data))
 }
