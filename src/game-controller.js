@@ -62,8 +62,5 @@ function onData (a) {
     setTimeout(() => process.exit(1), 2000)
   }
 
-
-
-
   console.log('data:', String(data))
 }

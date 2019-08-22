@@ -11,7 +11,7 @@ const {
 } = require('./config')
 
 module.exports.upload = async function upload () {
-  const filesToIgnore = await (ignoredFiles().then(r => r.map(f => path.join("bin", f))))
+  const filesToIgnore = await (ignoredFiles().then(r => r.map(f => path.join('bin', f))))
 
   return execCommand(`rm -f ${TMP_FILE_PATH}`)
     .then(() => execCommand(`zip -r ${TMP_FILE_PATH} bin --exclude ${filesToIgnore.map(file => '"' + file + '"').join(' ')}`))

@@ -3,10 +3,8 @@ const bodyParser = require('body-parser')
 
 const snapshot = require('./snapshot')
 const {
-  GameStatus,
   getStatus,
-  setStatus,
-  onChange
+  setStatus
 } = require('../business/status')
 const { HTTP_PORT } = require('./config')
 const { stopServer } = require('../game-controller')
@@ -46,7 +44,7 @@ module.exports.start = function start () {
           res.status(500).json({ error: e.message })
         })
     }))
-    .then(app => new Promise(res => {
-      app.listen(HTTP_PORT, () => res(app))
+    .then(app => new Promise(resolve => {
+      app.listen(HTTP_PORT, () => resolve(app))
     }))
 }
