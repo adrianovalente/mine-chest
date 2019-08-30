@@ -19,7 +19,7 @@ module.exports.start = function start () {
     .then(app => app.post('/restart', (req, res) => {
       setTimeout(() => process.exit(0), 5000)
       return setStatus(GameStatus.RESTARTING)
-        .then(() => res.status(200).json({ processed: true, mesage: 'Good bye! Will restart in 5 seconds. 💣'}))
+        .then(() => res.status(200).json({ processed: true, mesage: 'Good bye! Will restart in 5 seconds. 💣' }))
     }))
     .then(app => app.post('/status', (req, res) => {
       const status = req.body.status
