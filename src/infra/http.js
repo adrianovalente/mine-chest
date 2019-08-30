@@ -4,7 +4,8 @@ const bodyParser = require('body-parser')
 const snapshot = require('./snapshot')
 const {
   getStatus,
-  setStatus
+  setStatus,
+  GameStatus
 } = require('../business/status')
 const { HTTP_PORT } = require('./config')
 const { stopServer } = require('../game-controller')
@@ -15,6 +16,11 @@ module.exports.start = function start () {
     .then(app => app.get('/status', (req, res) => res.json({
       status: getStatus()
     })))
+    .then(app => app.post('/restart', (req, res) => {
+      setTimeout(() => process.exit(0), 5000)
+      return setStatus(GameStatus.RESTARTING)
+        .then(() => res.status(200).json({ processed: true, mesage: 'Good bye! Will restart in 5 seconds. 💣'}))
+    }))
     .then(app => app.post('/status', (req, res) => {
       const status = req.body.status
       try {

@@ -6,6 +6,7 @@ const GameStatus = {
   RUNNING: 'running',
   CRASHED: 'crashed',
   STOPPING: 'stopping',
+  RESTARTING: 'restarting',
   SNAPSHOT_RESTORE: 'restoring-snapshot',
   SNAPSHOT_UPLOAD: 'uploading-snapshot'
 }
