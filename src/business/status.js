@@ -1,4 +1,5 @@
 const { yellow, bold } = require('kleur')
+
 const GameStatus = {
   IDLE: 'idle',
   SETUP: 'setup',

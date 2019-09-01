@@ -2,7 +2,9 @@ const childProcess = require('child_process')
 
 const execCommand = require('./infra/command-executor')
 const snapshot = require('./infra/snapshot')
-const { GameStatus, setStatus } = require('./business/status')
+const xnine = require('./infra/xnine')
+const Status = require('./business/status')
+const { GameStatus, setStatus } = Status
 const {
   SERVER_FILE_NAME,
   BIN_PATH
@@ -16,7 +18,25 @@ module.exports = {
 let _game // eslint-ignore-line
 const noop = () => {}
 
+function gameChangeMessage (s) {
+  if (s === GameStatus.STARTING) {
+    return 'Servidor está ligando...'
+  }
+
+  if (s === GameStatus.RUNNING) {
+    return 'Servidor rodando!'
+  }
+}
+
 async function startServer ({ forceRestore } = {}) {
+  Status.onChange(s => {
+    const message = gameChangeMessage(s)
+
+    if (s) {
+      return xnine.reportMessage(message)
+    }
+  })
+
   await setStatus(GameStatus.SNAPSHOT_RESTORE)
 
   const thereIsAlreadyABackup = !!(await execCommand(`ls ${BIN_PATH}/${SERVER_FILE_NAME}`).catch(noop))
@@ -51,6 +71,10 @@ async function stopServer () {
 
 function onData (a) {
   const data = String(a)
+
+  if (/joined the game/i.test(data)) {
+    xnine.reportMessage(data)
+  }
 
   if (/Done.* For help, type/i.test(data)) {
     setStatus(GameStatus.RUNNING)
