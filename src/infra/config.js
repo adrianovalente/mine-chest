@@ -5,7 +5,7 @@ const BIN_PATH = path.join(__dirname, '../..', BIN_DIRECTORY_NAME)
 const RESOURCES_PATH = path.join(__dirname, '../../resources')
 
 module.exports = {
-  HTTP_PORT: process.env.HTTP_PORT || 80,
+  HTTP_PORT: process.env.HTTP_PORT || 8080,
   BIN_DIRECTORY_NAME,
   RESOURCES_PATH,
   BIN_PATH,
